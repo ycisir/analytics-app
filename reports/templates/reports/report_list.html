@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Reports {% endblock title %}
+
+{% block content %}
+    <h1>Reports</h1>
+    <hr>
+    <div class="row">
+        {% for obj in object_list %}
+            <div class="col-md-3">  <!-- Change to col-md-4 for three columns in a row -->
+                <div class="card mb-3">
+                    {% if obj.image %}
+                        <img class="card-img-top w-100" src="{{ obj.image.url }}" alt="{{ obj.name }}">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ obj.name }}</h5>
+                        <p class="card-text">{{ obj.remarks|truncatewords:5 }}</p>
+                        <a href="{{ obj.get_absolute_url }}" class="btn btn-primary">Details</a>
+                        <a href="{% url 'reports:pdf' obj.pk %}" class="btn btn-danger">PDF</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-md-12">  <!-- Full width for the message when no reports are available -->
+                <h5>No reports created yet</h5>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

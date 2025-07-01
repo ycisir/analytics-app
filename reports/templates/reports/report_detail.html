@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block title %} {{ object.name }} {% endblock title %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="mb-4">{{ object.name }}</h1>
+
+        {% if object.image %}
+            <div class="text-center mb-4">
+                <img src="{{ object.image.url }}" alt="{{ object.name }}" class="img-fluid rounded">
+            </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Remarks:</h3>
+                <p class="card-text">{{ object.remarks }}</p>
+                <hr>
+                <p class="mb-1">Author: <strong>{{ object.author.user.username }}</strong></p>
+                <p>Created: <strong>{{ object.created }}</strong></p>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

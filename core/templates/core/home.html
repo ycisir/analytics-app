@@ -2,11 +2,80 @@
 {% load static %}
 
 {% block scripts %}
-
+    <script src="{% static 'core/js/home.js' %}" defer></script>
 {% endblock scripts %}
-
 {% block title %} home {% endblock title %}
 
 {% block content %}
-    <h3 class="text-success">Home rendered</h3>
+
+<!-- Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add report</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <div id="alert-box"></div>
+        <form action="" method="post" id="report-form">
+            {% csrf_token %}
+            {{ report_form.as_p }}
+            <button type="submit" class="btn btn-info">Save</button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+
+
+<div class="container mt-4">
+    
+    {% if no_data %}
+        <div class="alert alert-warning" role="alert">
+            {{ no_data }}
+        </div>
+    {% endif %}
+    
+    <form action="" method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ search_form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if sales_df %}
+        <div class="table-responsive mb-3">
+            <h4>Sales Data</h4>
+            {{ sales_df|safe }}
+        </div>
+        <hr>
+
+        <div class="table-responsive mb-3">
+            <h4>Positions Data</h4>
+            {{ positions_df|safe }}
+        </div>
+        <hr>
+
+        <div class="table-responsive mb-3">
+            <h4>Merged Data</h4>
+            {{ merged_df|safe }}
+        </div>
+        <hr>
+
+        <div class="table-responsive mb-3">
+            <h4>Grouped By Data</h4>
+            {{ df|safe }}
+        </div>
+        <hr>
+
+        <div>
+            <h4>Chart</h4>
+            <img src="data:image/png;base64, {{ chart|safe }}" id="img">
+        </div>
+    {% endif %}
+    
+    <button class="btn btn-primary d-none" id="report-btn" data-bs-toggle="modal" data-bs-target="#reportModal">Add report</button>
+</div>
 {% endblock content %}
