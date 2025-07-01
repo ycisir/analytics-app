@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from core.models import Profile
+from core.models import Profile, Product, Customer
 from django.http import JsonResponse, HttpResponse
 from reports.utils import get_report_image
 from reports.models import Report
@@ -16,6 +16,7 @@ from sales.models import Position, CSV, Sale
 import csv
 from django.utils.dateparse import parse_date
 
+import pdb
 
 class ReportListView(ListView):
     model = Report
@@ -37,12 +38,27 @@ def csv_upload_view(request):
             reader = csv.reader(f)
             reader.__next__()
             for row in reader:
-                print(row, type(row))
                 transaction_id = row[1]
                 product = row[2]
                 quantity = int(row[3])
                 customer = row[4]
                 date = parse_date(row[5])
+
+                
+                # pdb.set_trace()
+                try:
+                    product_obj = Product.objects.get(name__iexact=product)
+                except Product.DoesNotExist:
+                    product_obj = None
+                
+                if product_obj is not None:
+                    customer_obj, _ = Customer.objects.get_or_create(name=customer)
+                    salesman_obj = Profile.objects.get(user=request.user)
+                    position_obj = Position.objects.create(product=product_obj, quantity=quantity, created=date)
+
+                    sale_obj, _ = Sale.objects.get_or_create(transaction_id=transaction_id, customer=customer_obj, salesman=salesman_obj, created=date)
+                    sale_obj.positions.add(position_obj)
+                    sale_obj.save()
 
     return HttpResponse()
 
