@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block title %} my profile {% endblock title %}
+
+{% block content %}
+    {% if confirm %}
+        <div class="alert alert-primary" role="alert">
+            Your profile has been updated!
+        </div>
+    {% endif %}
+
+    <div class="text-center">
+        <img src="{{profile.avatar.url}}" alt="my-profile" height="150px" width="150px">
+    </div>
+
+    <br>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-primary">update</button>
+    </form>
+{% endblock content %}

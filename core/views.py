@@ -4,6 +4,8 @@ from sales.models import Sale
 import pandas as pd
 from sales.utils import get_customer_from_id, get_salesman_from_id, get_chart
 from reports.forms import ReportForm
+from core.models import Profile
+from core.forms import ProfileForm
 
 def home(request):
 	sales_df = None
@@ -67,3 +69,19 @@ def home(request):
 		'no_data': no_data
 	}
 	return render(request, 'core/home.html', context)
+
+
+def my_profile_view(request):
+	profile = Profile.objects.get(user=request.user)
+	form = ProfileForm(request.POST or None, request.FILES or None, instance=profile)
+	confirm = False
+
+	if form.is_valid():
+		form.save()
+		confirm = True
+	context = {
+		'profile': profile,
+		'form': form,
+		'confirm': confirm
+	}
+	return render(request, 'core/main.html', context)
